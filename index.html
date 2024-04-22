@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>FigFlix</title>
+</head>
+<body>
+    <header>
+        <!-- section for the navigation bar -->
+        <div class="container">
+            
+            <nav>
+                <ul class="sidebar">
+                    
+                    <li onclick=hideSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Movies</a></li>
+                    <li><a href="#">Series</a></li>
+                    <li><a href="#">Trending</a></li>
+                    <li><a href="#">Genre</a></li>
+                    <div class="search-bar">
+                        <a class="login-btn" href="login.html">Login</a>
+                        <a class="signup-btn" href="signup.html">Signup</a>
+                    </div>
+                </ul>
+                <!-- this part is hideen on mobile devices -->
+                <ul class="navitems">
+                    <h1>FigFlix</h1>
+                    <li class="hideOnMobile"><a href="index.html">Home</a></li>
+                    <li class="hideOnMobile"><a href="#">Movies</a></li>
+                    <li class="hideOnMobile"><a href="#">Series</a></li>
+                    <li class="hideOnMobile"><a href="#">Trending</a></li>
+                    <li class="hideOnMobile"><a href="#">Genre</a></li>
+                    <div class="search-bar">
+                        <input class="search-input" type="text" placeholder="Search...">
+            <button class="search-icon" type="submit"><i class="fas fa-search"></i></button>
+                        <a class="login-btn hideOnMobile" href="login.html">Login</a>
+                        <a class="signup-btn hideOnMobile" href="signup.html">Signup</a>
+                    </div>
+                    <li class="menu-button" onclick=showSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg></a></li>
+                </ul>
+            </nav>
+
+            
+            
+            
+        </div>
+    </header>
+
+    <main>
+        <!--for the slider tool on the webpage -->
+        <section id="slider" class="swiper-container">
+    
+                    <marquee behavior="scroll" direction="left">
+                        <div class="swiper">
+                            <img src="img/pic1.png" alt="Image 1">
+                            <img src="img/pic2.png" alt="Image 2">
+                            <img src="img/pic3.png" alt="Image 2">
+                            <img src="img/pic4.png" alt="Image 2">
+                            <img src="img/pic5.png" alt="Image 2">
+                            <img src="img/pic6.png" alt="Image 2">
+                            <img src="img/pic7.png" alt="Image 2">
+                            <img src="img/pic8.png" alt="Image 2">
+                            <img src="img/pic9.png" alt="Image 2">
+                            <img src="img/pic10.png" alt="Image 2">
+                        </div>
+                    </marquee>
+                
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+        </section>
+    
+        <!-- movie list feature added -->
+        <section id="movie-list">
+            <div class="listing-container">
+                <div class="listing">
+                    <h1>HD</h1>
+                    <h4>Late Night With The Devil</h4>
+                    <p>2024 - 93mins</p>
+                
+                 </div>
+                <div class="listing1">
+                    <h1>HD</h1>
+                    <h4>American Society of Magic...</h4>
+                    <p>2024 - 122mins</p>
+                
+                </div>
+                <div class="listing2">
+                    <h1>HD</h1>
+                    <h4>Dune 2</h4>
+                    <p>2024 - 89mins</p>
+            
+                </div>
+                <div class="listing3">
+                    <h1>HD</h1>
+                    <h4>BLOOD LUST</h4>
+                    <p>2024 - 105mins</p>
+            
+                </div>
+                <div class="listing">
+                    <h1>HD</h1>
+                    <h4>Late Night With The Devil</h4>
+                    <p>2024 - 93mins</p>
+                
+                 </div>
+                <div class="listing1">
+                    <h1>HD</h1>
+                    <h4>American Society of Magic...</h4>
+                    <p>2024 - 122mins</p>
+                
+                </div>
+                <div class="listing2">
+                    <h1>HD</h1>
+                    <h4>Dune 2</h4>
+                    <p>2024 - 89mins</p>
+            
+                </div>
+                <div class="listing3">
+                    <h1>HD</h1>
+                    <h4>BLOOD LUST</h4>
+                    <p>2024 - 105mins</p>
+            
+                </div>
+            </div>
+        </section>
+    </main> 
+<!--abou us segment -->
+    <footer>
+        <div class="footer-container">
+            <div class="about-us">
+                <h2>About Us</h2>
+                <ul>
+                    <li><a href="termsofservice.html">Terms of Service</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 FigFlix. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+<!-- makes the sidebar and hidesidebar responsive-->
+    <script> 
+        function showSidebar(){
+            const sidebar = document.querySelector('.sidebar')
+            sidebar.style.display = 'flex' 
+        }
+            
+        function hideSidebar(){ 
+            const sidebar = document.querySelector('.sidebar')
+            sidebar.style.display = 'none'
+        } 
+    </script>
+
+    <script src="movie.js"></script>
+
+</body>
+</html>
