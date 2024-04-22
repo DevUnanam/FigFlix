@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>FigFlix signup</title>
+</head>
+<body>
+    <div class="signup-box">
+        <h2>Signup for FigFlix</h2>
+        <form action="signup_process.php" method="POST">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+
+            <label for="confirm_password">Confirm Password:</label><br>
+            <input type="password" id="confirm_password" name="confirm_password" required><br>
+
+            <button type="submit">Signup</button>
+        </form>
+
+        <form action="index.html">
+            <button type="submit">Cancel</button>
+        </form>
+
+        <div>
+            <p>Already have an account? <a href="login.html">Sign in</a></p>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <div class="about-us">
+                <h2>About Us</h2>
+                <ul>
+                    <li><a href="termsofservice.html">Terms of Service</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 FigFlix. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
