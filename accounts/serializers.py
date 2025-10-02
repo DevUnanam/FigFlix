@@ -40,12 +40,20 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         validated_data.pop('password_confirm')
         preferences_data = validated_data.pop('preferences', None)
 
+        role = validated_data.get('role', 'user')
+
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            role=validated_data.get('role', 'user')
+            role=role
         )
+
+        # If admin role, grant Django admin access
+        if role == 'admin':
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
 
         # Create user preferences if provided
         if preferences_data:

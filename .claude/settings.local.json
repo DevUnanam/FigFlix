@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(python manage.py:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(python:*)",
+      "Bash(find:*)",
+      "Bash(pkill:*)",
+      "Bash(kill:*)"
     ],
     "deny": [],
     "ask": []

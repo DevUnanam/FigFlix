@@ -137,8 +137,13 @@ def update_user_view(request, user_id):
             user.email = request.data['email']
         if 'role' in request.data:
             user.role = request.data['role']
-            # Update staff status based on role
-            user.is_staff = request.data['role'] == 'admin'
+            # Update staff and superuser status based on role
+            if request.data['role'] == 'admin':
+                user.is_staff = True
+                user.is_superuser = True
+            else:
+                user.is_staff = False
+                user.is_superuser = False
         if 'is_active' in request.data:
             user.is_active = request.data['is_active']
 
