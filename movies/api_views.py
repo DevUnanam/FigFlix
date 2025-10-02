@@ -122,6 +122,61 @@ class MovieCreateView(generics.CreateAPIView):
         serializer.save(uploaded_by=self.request.user)
 
 
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def update_movie_view(request, pk):
+    """
+    Update movie (admin only).
+    PUT/PATCH /api/movies/{id}/update/
+    """
+    if request.user.role != 'admin':
+        return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        movie = Movie.objects.get(pk=pk)
+
+        # Update allowed fields
+        if 'title' in request.data:
+            movie.title = request.data['title']
+        if 'description' in request.data:
+            movie.description = request.data['description']
+        if 'release_year' in request.data:
+            movie.release_year = request.data['release_year']
+        if 'runtime' in request.data:
+            movie.runtime = request.data['runtime']
+        if 'trailer_url' in request.data:
+            movie.trailer_url = request.data['trailer_url']
+        if 'director' in request.data:
+            movie.director = request.data['director']
+        if 'language' in request.data:
+            movie.language = request.data['language']
+
+        movie.save()
+
+        serializer = MovieSerializer(movie)
+        return Response(serializer.data)
+    except Movie.DoesNotExist:
+        return Response({'error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_movie_view(request, pk):
+    """
+    Delete movie (admin only).
+    DELETE /api/movies/{id}/delete/
+    """
+    if request.user.role != 'admin':
+        return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        movie = Movie.objects.get(pk=pk)
+        movie.delete()
+        return Response({'message': 'Movie deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except Movie.DoesNotExist:
+        return Response({'error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
 # TMDb API endpoints
 @api_view(['GET'])
 def tmdb_search_view(request):

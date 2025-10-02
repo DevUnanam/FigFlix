@@ -40,6 +40,14 @@ const API = {
         updatePreferences: (data) => axios.put(`${API_BASE}/preferences/update/`, data),
     },
 
+    // Users (Admin)
+    users: {
+        list: () => axios.get(`${API_BASE}/users/`),
+        get: (id) => axios.get(`${API_BASE}/users/${id}/`),
+        update: (id, data) => axios.put(`${API_BASE}/users/${id}/update/`, data),
+        delete: (id) => axios.delete(`${API_BASE}/users/${id}/delete/`),
+    },
+
     // Movies
     movies: {
         list: (params) => axios.get(`${API_BASE}/movies/`, { params }),
@@ -47,6 +55,8 @@ const API = {
         create: (data) => axios.post(`${API_BASE}/movies/create/`, data, {
             headers: { 'Content-Type': 'multipart/form-data' }
         }),
+        update: (id, data) => axios.put(`${API_BASE}/movies/${id}/update/`, data),
+        delete: (id) => axios.delete(`${API_BASE}/movies/${id}/delete/`),
         getGenres: () => axios.get(`${API_BASE}/movies/genres/`),
         syncGenres: () => axios.post(`${API_BASE}/movies/genres/sync/`),
 

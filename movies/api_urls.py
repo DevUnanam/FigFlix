@@ -13,6 +13,8 @@ urlpatterns = [
     path('', api_views.MovieListView.as_view(), name='api_movie_list'),
     path('<int:pk>/', api_views.MovieDetailView.as_view(), name='api_movie_detail'),
     path('create/', api_views.MovieCreateView.as_view(), name='api_movie_create'),
+    path('<int:pk>/update/', api_views.update_movie_view, name='api_movie_update'),
+    path('<int:pk>/delete/', api_views.delete_movie_view, name='api_movie_delete'),
 
     # TMDb integration endpoints
     path('tmdb/search/', api_views.tmdb_search_view, name='api_tmdb_search'),

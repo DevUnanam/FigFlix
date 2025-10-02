@@ -73,3 +73,14 @@ def dashboard_view(request):
 def profile_view(request):
     """User profile page"""
     return render(request, 'accounts/profile.html', {'user': request.user})
+
+
+@login_required
+def manage_users_view(request):
+    """
+    Manage users page (admin only).
+    """
+    if request.user.role != 'admin':
+        return render(request, '403.html', status=403)
+
+    return render(request, 'accounts/manage_users.html')

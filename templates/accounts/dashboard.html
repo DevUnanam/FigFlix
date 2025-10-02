@@ -34,14 +34,14 @@
         </a>
 
         <!-- Manage Movies Card -->
-        <a href="/admin/movies/movie/" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+        <a href="{% url 'manage_movies' %}" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
             <div class="text-primary text-4xl mb-4">🎬</div>
             <h3 class="text-xl font-bold mb-2">Manage Movies</h3>
             <p class="text-gray-400">Edit and organize movies</p>
         </a>
 
         <!-- User Management Card -->
-        <a href="/admin/accounts/user/" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+        <a href="{% url 'manage_users' %}" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
             <div class="text-primary text-4xl mb-4">👥</div>
             <h3 class="text-xl font-bold mb-2">Manage Users</h3>
             <p class="text-gray-400">View and manage users</p>

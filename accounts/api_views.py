@@ -83,3 +83,95 @@ def get_preferences_view(request):
         return Response(serializer.data)
     except UserPreference.DoesNotExist:
         return Response({'detail': 'Preferences not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+# User Management (Admin Only)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_users_view(request):
+    """
+    List all users (Admin only).
+    GET /api/users/
+    """
+    if request.user.role != 'admin':
+        return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+
+    users = User.objects.all().order_by('-date_joined')
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_view(request, user_id):
+    """
+    Get user details (Admin only).
+    GET /api/users/{id}/
+    """
+    if request.user.role != 'admin':
+        return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        user = User.objects.get(id=user_id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def update_user_view(request, user_id):
+    """
+    Update user details (Admin only).
+    PUT/PATCH /api/users/{id}/update/
+    """
+    if request.user.role != 'admin':
+        return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        user = User.objects.get(id=user_id)
+
+        # Update allowed fields
+        if 'email' in request.data:
+            user.email = request.data['email']
+        if 'role' in request.data:
+            user.role = request.data['role']
+            # Update staff status based on role
+            user.is_staff = request.data['role'] == 'admin'
+        if 'is_active' in request.data:
+            user.is_active = request.data['is_active']
+
+        user.save()
+
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_user_view(request, user_id):
+    """
+    Delete user (Admin only).
+    DELETE /api/users/{id}/delete/
+    """
+    if request.user.role != 'admin':
+        return Response({'error': 'Admin access required'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        user = User.objects.get(id=user_id)
+
+        # Prevent deleting superusers
+        if user.is_superuser:
+            return Response({'error': 'Cannot delete superuser'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Prevent deleting self
+        if user.id == request.user.id:
+            return Response({'error': 'Cannot delete yourself'}, status=status.HTTP_403_FORBIDDEN)
+
+        user.delete()
+        return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

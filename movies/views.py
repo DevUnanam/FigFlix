@@ -36,3 +36,14 @@ def admin_upload_view(request):
         return render(request, '403.html', status=403)
 
     return render(request, 'movies/admin_upload.html')
+
+
+@login_required
+def manage_movies_view(request):
+    """
+    Manage movies page (admin only).
+    """
+    if request.user.role != 'admin':
+        return render(request, '403.html', status=403)
+
+    return render(request, 'movies/manage_movies.html')
