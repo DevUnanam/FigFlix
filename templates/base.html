@@ -68,12 +68,13 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <!-- Logo -->
-                <a href="{% url 'dashboard' %}" class="text-primary text-3xl font-bold">
+                <a href="{% url 'home' %}" class="text-primary text-3xl font-bold">
                     FigFlix
                 </a>
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex space-x-6">
+                    <a href="{% url 'home' %}" class="hover:text-primary transition">Home</a>
                     {% if user.is_authenticated %}
                         <a href="{% url 'dashboard' %}" class="hover:text-primary transition">Dashboard</a>
                         <a href="{% url 'movie_list' %}" class="hover:text-primary transition">Browse Movies</a>

@@ -53,7 +53,9 @@ async function loadMovies() {
                 page: currentPage,
                 ...currentFilters
             };
+            console.log('Loading local movies with params:', params);
             response = await API.movies.list(params);
+            console.log('Local movies response:', response.data);
             displayLocalMovies(response.data);
 
         } else {
@@ -72,6 +74,7 @@ async function loadMovies() {
         }
     } catch (error) {
         console.error('Failed to load movies:', error);
+        console.error('Error details:', error.response?.data || error.message);
         showNoResults();
     } finally {
         showLoading(false);
@@ -89,7 +92,9 @@ function displayLocalMovies(movies) {
         return;
     }
 
-    grid.innerHTML = movies.map(movie => `
+    grid.innerHTML = movies.map(movie => {
+        const rating = movie.average_rating != null ? movie.average_rating.toFixed(1) : 'N/A';
+        return `
         <a href="/movies/${movie.id}/" class="movie-card">
             <div class="relative">
                 <img
@@ -99,7 +104,7 @@ function displayLocalMovies(movies) {
                     onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'"
                 >
                 <div class="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded">
-                    <span class="text-xs star-rating">⭐ ${movie.average_rating.toFixed(1)}</span>
+                    <span class="text-xs star-rating">⭐ ${rating}</span>
                 </div>
             </div>
             <div class="mt-2">
@@ -110,7 +115,8 @@ function displayLocalMovies(movies) {
                 ` : ''}
             </div>
         </a>
-    `).join('');
+        `;
+    }).join('');
 }
 
 /**

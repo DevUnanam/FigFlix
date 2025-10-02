@@ -14,9 +14,11 @@ A comprehensive movie streaming platform built with **Django**, **Tailwind CSS**
 
 ### Core Functionality
 - 🎬 **Movie Management**: Admin can upload movies with posters, trailers, and metadata
-- 🔍 **Smart Search**: Search movies by title, actor, director, or genre
+- 🔍 **Smart Search**: Search movies by title, actor, director, or genre with real-time results
 - ⭐ **Ratings & Reviews**: Rate movies (1-5 stars) and leave detailed reviews
 - 📊 **TMDb Integration**: Fetch movie data, posters, trailers, and genres from The Movie Database
+- 🏠 **Dynamic Home Page**: Display both admin-uploaded and TMDb movies with pagination (20 per page)
+- 🔎 **Advanced Search**: Search across both local collection and TMDb database
 - 🤖 **AI Recommendation Bot**: Chat-style widget that suggests movies based on user preferences and watch history
 - 📺 **Watch History**: Track watched movies for personalized recommendations
 - 🎨 **Modern UI**: Beautiful, responsive design with Tailwind CSS

@@ -6,6 +6,16 @@ from django.contrib.auth.decorators import login_required
 from .models import Movie
 
 
+def home_view(request):
+    """
+    Home page - displays both TMDb popular movies and admin-uploaded movies.
+    """
+    context = {
+        'title': 'FigFlix - Your Movie Hub'
+    }
+    return render(request, 'movies/home.html', context)
+
+
 def movie_list_view(request):
     """
     Display list of movies.

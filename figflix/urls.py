@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/login/', permanent=False), name='home'),
+    path('', RedirectView.as_view(url='/home/', permanent=False), name='root'),
     path('admin/', admin.site.urls),
 
     # App URLs
