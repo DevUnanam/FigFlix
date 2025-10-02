@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ movie.title }} - FigFlix{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Movie Hero Section -->
+    <div class="relative rounded-lg overflow-hidden" style="height: 500px;">
+        <!-- Backdrop Image -->
+        {% if movie.backdrop_url %}
+        <div
+            class="absolute inset-0 bg-cover bg-center"
+            style="background-image: url('{{ movie.backdrop_url }}');"
+        >
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-transparent"></div>
+        </div>
+        {% endif %}
+
+        <!-- Movie Info Overlay -->
+        <div class="relative h-full flex items-end p-8">
+            <div class="flex space-x-8">
+                <!-- Poster -->
+                <img
+                    src="{{ movie.poster_image_url }}"
+                    alt="{{ movie.title }}"
+                    class="w-64 h-96 object-cover rounded-lg shadow-2xl"
+                    onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'"
+                >
+
+                <!-- Info -->
+                <div class="flex-1">
+                    <h1 class="text-5xl font-bold mb-4">{{ movie.title }}</h1>
+
+                    <div class="flex items-center space-x-4 text-lg mb-4">
+                        <span>{{ movie.release_year }}</span>
+                        {% if movie.runtime %}
+                        <span>•</span>
+                        <span>{{ movie.runtime }} min</span>
+                        {% endif %}
+                        <span>•</span>
+                        <span class="star-rating">
+                            ⭐ {{ movie.average_rating|floatformat:1 }}/10
+                        </span>
+                    </div>
+
+                    <!-- Genres -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for genre in movie.genres.all %}
+                        <span class="px-3 py-1 bg-primary/30 rounded-full text-sm">{{ genre.name }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-4">
+                        {% if movie.trailer_url %}
+                        <a
+                            href="{{ movie.trailer_url }}"
+                            target="_blank"
+                            class="bg-primary hover:bg-red-700 px-6 py-3 rounded-lg font-bold transition"
+                        >
+                            ▶ Watch Trailer
+                        </a>
+                        {% endif %}
+
+                        <button
+                            onclick="addToWatchHistory()"
+                            class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg font-bold transition"
+                        >
+                            + Add to Watched
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Details -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Description -->
+            <div class="bg-secondary rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">Overview</h2>
+                <p class="text-gray-300 leading-relaxed">{{ movie.description }}</p>
+            </div>
+
+            <!-- Cast & Crew -->
+            {% if movie.director or movie.actors %}
+            <div class="bg-secondary rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">Cast & Crew</h2>
+                {% if movie.director %}
+                <div class="mb-4">
+                    <span class="text-gray-400">Director:</span>
+                    <span class="ml-2 font-semibold">{{ movie.director }}</span>
+                </div>
+                {% endif %}
+                {% if movie.actors %}
+                <div>
+                    <span class="text-gray-400">Cast:</span>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        {% for actor in movie.actors %}
+                        <span class="px-3 py-1 bg-gray-700 rounded-full text-sm">{{ actor }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Reviews Section -->
+            <div class="bg-secondary rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">User Reviews</h2>
+
+                <!-- Add Review Form (if logged in) -->
+                {% if user.is_authenticated %}
+                <div class="mb-6 p-4 bg-gray-700 rounded-lg">
+                    <h3 class="font-bold mb-3">Write a Review</h3>
+                    <form id="reviewForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="block text-sm mb-2">Rating</label>
+                            <div class="flex space-x-2">
+                                {% for i in "12345" %}
+                                <button
+                                    type="button"
+                                    class="star-btn text-3xl"
+                                    data-rating="{{ i }}"
+                                    onclick="setRating({{ i }})"
+                                >
+                                    ☆
+                                </button>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" id="ratingInput" name="rating" value="0">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="block text-sm mb-2">Review Text (optional)</label>
+                            <textarea
+                                id="reviewText"
+                                name="review_text"
+                                rows="3"
+                                class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                                placeholder="Share your thoughts about this movie..."
+                            ></textarea>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="bg-primary hover:bg-red-700 px-6 py-2 rounded-lg transition"
+                        >
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+
+                <!-- Reviews List -->
+                <div id="reviewsList" class="space-y-4">
+                    <p class="text-gray-400 text-center py-8">Loading reviews...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Movie Stats -->
+            <div class="bg-secondary rounded-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Details</h3>
+                <div class="space-y-3 text-sm">
+                    <div>
+                        <span class="text-gray-400">Language:</span>
+                        <span class="ml-2 font-semibold">{{ movie.language|upper }}</span>
+                    </div>
+                    {% if movie.tmdb_vote_count %}
+                    <div>
+                        <span class="text-gray-400">Votes:</span>
+                        <span class="ml-2 font-semibold">{{ movie.tmdb_vote_count|intcomma }}</span>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <span class="text-gray-400">Source:</span>
+                        <span class="ml-2 font-semibold capitalize">{{ movie.source }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Similar Movies -->
+            <div class="bg-secondary rounded-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Similar Movies</h3>
+                <div id="similarMovies" class="space-y-4">
+                    <p class="text-gray-400 text-center py-4">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const movieId = {{ movie.id }};
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/movie_detail.js"></script>
+{% endblock %}

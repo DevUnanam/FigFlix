@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Movie - FigFlix{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Upload New Movie</h1>
+
+    <!-- Tab Navigation -->
+    <div class="flex space-x-4 mb-6">
+        <button
+            id="tabManual"
+            onclick="switchTab('manual')"
+            class="px-6 py-3 bg-primary rounded-lg font-bold"
+        >
+            Manual Upload
+        </button>
+        <button
+            id="tabTmdb"
+            onclick="switchTab('tmdb')"
+            class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-bold"
+        >
+            Import from TMDb
+        </button>
+    </div>
+
+    <!-- Manual Upload Form -->
+    <div id="manualForm" class="bg-secondary rounded-lg p-6">
+        <form id="uploadForm" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                <!-- Title -->
+                <div>
+                    <label for="title" class="block text-sm font-medium mb-2">Title *</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        required
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium mb-2">Description *</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        required
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    ></textarea>
+                </div>
+
+                <!-- Release Year & Runtime -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="release_year" class="block text-sm font-medium mb-2">Release Year</label>
+                        <input
+                            type="number"
+                            id="release_year"
+                            name="release_year"
+                            min="1900"
+                            max="2100"
+                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="runtime" class="block text-sm font-medium mb-2">Runtime (minutes)</label>
+                        <input
+                            type="number"
+                            id="runtime"
+                            name="runtime"
+                            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                        >
+                    </div>
+                </div>
+
+                <!-- Poster Upload -->
+                <div>
+                    <label for="poster" class="block text-sm font-medium mb-2">Poster Image</label>
+                    <input
+                        type="file"
+                        id="poster"
+                        name="poster"
+                        accept="image/*"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                </div>
+
+                <!-- Trailer URL -->
+                <div>
+                    <label for="trailer_url" class="block text-sm font-medium mb-2">Trailer URL (YouTube)</label>
+                    <input
+                        type="url"
+                        id="trailer_url"
+                        name="trailer_url"
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                </div>
+
+                <!-- Genres -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Genres</label>
+                    <div id="genreCheckboxes" class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Director -->
+                <div>
+                    <label for="director" class="block text-sm font-medium mb-2">Director</label>
+                    <input
+                        type="text"
+                        id="director"
+                        name="director"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                </div>
+
+                <!-- Actors -->
+                <div>
+                    <label for="actors" class="block text-sm font-medium mb-2">Actors (comma-separated)</label>
+                    <input
+                        type="text"
+                        id="actors"
+                        name="actors"
+                        placeholder="Actor 1, Actor 2, Actor 3"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                </div>
+
+                <!-- Language -->
+                <div>
+                    <label for="language" class="block text-sm font-medium mb-2">Language</label>
+                    <input
+                        type="text"
+                        id="language"
+                        name="language"
+                        placeholder="en"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                </div>
+
+                <div id="message" class="hidden p-4 rounded-lg"></div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition"
+                >
+                    Upload Movie
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TMDb Import Form -->
+    <div id="tmdbForm" class="hidden bg-secondary rounded-lg p-6">
+        <div class="mb-6">
+            <label for="tmdbSearch" class="block text-sm font-medium mb-2">Search TMDb</label>
+            <div class="flex space-x-2">
+                <input
+                    type="text"
+                    id="tmdbSearch"
+                    placeholder="Enter movie title..."
+                    class="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                >
+                <button
+                    onclick="searchTMDb()"
+                    class="bg-primary hover:bg-red-700 px-6 py-2 rounded-lg transition"
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div id="tmdbResults" class="space-y-4">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/admin_upload.js"></script>
+{% endblock %}

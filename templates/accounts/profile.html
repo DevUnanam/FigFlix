@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - FigFlix{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">My Profile</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- User Info -->
+        <div class="bg-secondary rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">User Information</h2>
+            <div class="space-y-3">
+                <div>
+                    <p class="text-gray-400 text-sm">Username</p>
+                    <p class="font-semibold">{{ user.username }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Email</p>
+                    <p class="font-semibold">{{ user.email }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Role</p>
+                    <p class="font-semibold capitalize">{{ user.role }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Member Since</p>
+                    <p class="font-semibold">{{ user.date_joined|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="md:col-span-2 bg-secondary rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Movie Preferences</h2>
+
+            <form id="preferencesForm" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Favorite Genres -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Favorite Genres</label>
+                    <div id="genreSelection" class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Favorite Actors -->
+                <div>
+                    <label for="actors" class="block text-sm font-medium mb-2">Favorite Actors (comma-separated)</label>
+                    <input
+                        type="text"
+                        id="actors"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                        placeholder="e.g., Tom Hanks, Meryl Streep"
+                    >
+                </div>
+
+                <!-- Preferred Languages -->
+                <div>
+                    <label for="languages" class="block text-sm font-medium mb-2">Preferred Languages (comma-separated)</label>
+                    <input
+                        type="text"
+                        id="languages"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                        placeholder="e.g., English, Spanish"
+                    >
+                </div>
+
+                <!-- Minimum Rating -->
+                <div>
+                    <label for="minRating" class="block text-sm font-medium mb-2">Minimum Rating</label>
+                    <input
+                        type="number"
+                        id="minRating"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                        placeholder="0.0 - 10.0"
+                    >
+                </div>
+
+                <div id="message" class="hidden p-4 rounded-lg"></div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-primary hover:bg-red-700 text-white font-bold py-3 rounded-lg transition"
+                >
+                    Update Preferences
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Reviews -->
+    <div class="mt-8 bg-secondary rounded-lg p-6">
+        <h2 class="text-xl font-bold mb-4">My Reviews</h2>
+        <div id="myReviews" class="space-y-4">
+            <p class="text-gray-400 text-center py-8">Loading your reviews...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profile.js"></script>
+{% endblock %}

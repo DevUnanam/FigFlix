@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FigFlix - Movie Streaming Platform{% endblock %}</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e50914',
+                        secondary: '#221f1f',
+                        dark: '#141414',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .star-rating {
+            color: #fbbf24;
+        }
+
+        .movie-card {
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #141414;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-dark text-white min-h-full">
+    <!-- Navigation -->
+    <nav class="bg-secondary shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <a href="{% url 'dashboard' %}" class="text-primary text-3xl font-bold">
+                    FigFlix
+                </a>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex space-x-6">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="hover:text-primary transition">Dashboard</a>
+                        <a href="{% url 'movie_list' %}" class="hover:text-primary transition">Browse Movies</a>
+                        {% if user.role == 'admin' %}
+                            <a href="{% url 'admin_upload' %}" class="hover:text-primary transition">Upload Movie</a>
+                            <a href="/admin/" class="hover:text-primary transition">Admin Panel</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <span class="text-sm text-gray-300">Hello, {{ user.username }}</span>
+                        <a href="{% url 'profile' %}" class="hover:text-primary transition">Profile</a>
+                        <a href="{% url 'logout' %}" class="bg-primary hover:bg-red-700 px-4 py-2 rounded transition">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hover:text-primary transition">Login</a>
+                        <div class="relative group">
+                            <button class="bg-primary hover:bg-red-700 px-4 py-2 rounded transition">
+                                Sign Up ▾
+                            </button>
+                            <div class="hidden group-hover:block absolute right-0 mt-2 w-48 bg-secondary rounded-lg shadow-xl py-2 z-50">
+                                <a href="{% url 'register_user' %}" class="block px-4 py-2 hover:bg-gray-700">
+                                    👤 Sign up as User
+                                </a>
+                                <a href="{% url 'register_admin' %}" class="block px-4 py-2 hover:bg-gray-700">
+                                    👑 Sign up as Admin
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mx-auto px-4 mt-4">
+            {% for message in messages %}
+                <div class="p-4 mb-4 rounded {% if message.tags == 'error' %}bg-red-600{% elif message.tags == 'success' %}bg-green-600{% else %}bg-blue-600{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary mt-16 py-8">
+        <div class="container mx-auto px-4 text-center text-gray-400">
+            <p>&copy; 2025 FigFlix. All rights reserved.</p>
+            <p class="mt-2 text-sm">Powered by TMDb API</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/static/js/api.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

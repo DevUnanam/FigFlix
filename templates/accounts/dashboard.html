@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - FigFlix{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-primary to-red-800 rounded-lg p-8">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">Welcome back, {{ user.username }}!</h1>
+                <p class="text-gray-200">{% if is_admin %}Admin Dashboard{% else %}Your personal movie hub{% endif %}</p>
+            </div>
+            <div class="bg-white/20 px-4 py-2 rounded-lg">
+                <span class="text-sm font-semibold">
+                    {% if is_admin %}
+                        👑 ADMIN
+                    {% else %}
+                        👤 USER
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {% if is_admin %}
+    <!-- Admin Dashboard -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Upload Movie Card -->
+        <a href="{% url 'admin_upload' %}" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+            <div class="text-primary text-4xl mb-4">📤</div>
+            <h3 class="text-xl font-bold mb-2">Upload Movie</h3>
+            <p class="text-gray-400">Add new movies to the platform</p>
+        </a>
+
+        <!-- Manage Movies Card -->
+        <a href="/admin/movies/movie/" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+            <div class="text-primary text-4xl mb-4">🎬</div>
+            <h3 class="text-xl font-bold mb-2">Manage Movies</h3>
+            <p class="text-gray-400">Edit and organize movies</p>
+        </a>
+
+        <!-- User Management Card -->
+        <a href="/admin/accounts/user/" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+            <div class="text-primary text-4xl mb-4">👥</div>
+            <h3 class="text-xl font-bold mb-2">Manage Users</h3>
+            <p class="text-gray-400">View and manage users</p>
+        </a>
+    </div>
+    {% else %}
+    <!-- User Dashboard -->
+
+    <!-- AI Recommendations Section -->
+    <div class="bg-secondary rounded-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">🤖 Recommended For You</h2>
+            <button
+                onclick="loadRecommendations()"
+                class="bg-primary hover:bg-red-700 px-4 py-2 rounded transition"
+            >
+                Refresh
+            </button>
+        </div>
+        <div id="recommendations" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- Recommendations will be loaded here -->
+            <div class="col-span-full text-center text-gray-400 py-8">
+                <p>Loading recommendations...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot Widget -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button
+            id="chatToggle"
+            onclick="toggleChat()"
+            class="bg-primary hover:bg-red-700 text-white rounded-full p-4 shadow-2xl transition"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+            </svg>
+        </button>
+
+        <!-- Chat Window -->
+        <div
+            id="chatWindow"
+            class="hidden absolute bottom-16 right-0 w-96 bg-secondary rounded-lg shadow-2xl overflow-hidden"
+            style="max-height: 500px;"
+        >
+            <!-- Chat Header -->
+            <div class="bg-primary p-4 flex justify-between items-center">
+                <h3 class="font-bold">Movie Recommendation Bot</h3>
+                <button onclick="toggleChat()" class="hover:text-gray-300">✕</button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="h-80 overflow-y-auto p-4 space-y-3">
+                <div class="bg-gray-700 rounded-lg p-3 max-w-xs">
+                    <p class="text-sm">👋 Hi! I can help you discover great movies. What are you in the mood for?</p>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-gray-700">
+                <form id="chatForm" class="flex space-x-2">
+                    <input
+                        type="text"
+                        id="chatInput"
+                        placeholder="Ask for recommendations..."
+                        class="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                    >
+                    <button
+                        type="submit"
+                        class="bg-primary hover:bg-red-700 px-4 py-2 rounded-lg transition"
+                    >
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Watch History -->
+    <div class="bg-secondary rounded-lg p-6">
+        <h2 class="text-2xl font-bold mb-4">📺 Continue Watching</h2>
+        <div id="watchHistory" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- Watch history will be loaded here -->
+            <div class="col-span-full text-center text-gray-400 py-8">
+                <p>Loading your watch history...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="{% url 'movie_list' %}" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+            <div class="text-primary text-4xl mb-4">🎬</div>
+            <h3 class="text-xl font-bold mb-2">Browse Movies</h3>
+            <p class="text-gray-400">Explore our movie collection</p>
+        </a>
+
+        <a href="{% url 'profile' %}" class="bg-secondary rounded-lg p-6 hover:bg-gray-800 transition">
+            <div class="text-primary text-4xl mb-4">⚙️</div>
+            <h3 class="text-xl font-bold mb-2">Update Preferences</h3>
+            <p class="text-gray-400">Refine your movie preferences</p>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}
